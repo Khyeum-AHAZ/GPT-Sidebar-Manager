@@ -1,0 +1,14 @@
+# Local instructions and private handoff notes
+/AGENTS.md
+/PROJECT_CONTEXT.md
+/.codex/
+/.agents/
+
+# Release assets are uploaded separately to GitHub Releases
+/dist/
+
+# Local temporary files
+*.log
+*.tmp
+.DS_Store
+Thumbs.db

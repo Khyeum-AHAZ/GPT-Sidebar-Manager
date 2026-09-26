@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GPT Sidebar Manager</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main>
+    <h1>GPT Sidebar Manager</h1>
+    <label class="option"><input type="checkbox" id="gsm-enabled" checked> GSM 사용 (이 기기)</label>
+    <p id="gsm-status" class="note">GSM 표시: 켜짐</p>
+    <p id="connection" role="status">ChatGPT 탭 연결 중…</p>
+    <p id="sync-status" class="note" role="status">동기화 상태 확인 중…</p>
+    <h2>프로젝트 학습</h2>
+    <div class="actions">
+      <button type="button" data-mode="unlearned">미학습 프로젝트 일괄학습</button>
+      <button type="button" data-mode="all">모든 프로젝트 다시 학습</button>
+      <button type="button" data-mode="current">현재 프로젝트 다시 읽기</button>
+      <button type="button" id="cancel" hidden>취소</button>
+    </div>
+    <p id="progress" aria-live="polite"></p>
+    <ul id="results"></ul>
+    <h2>실험 기능</h2>
+    <label class="option"><input type="checkbox" id="full-drag-enabled"> 전체 드래그 허용 [실험적]</label>
+    <p id="full-drag-status" class="note">전체 드래그: 꺼짐</p>
+    <label class="option"><input type="checkbox" id="network-enabled"> 네트워크 자동 인식 [실험적]</label>
+    <p id="network-status" class="note">네트워크 인식: 꺼짐</p>
+    <button type="button" id="network-check">B 지금 다시 확인</button>
+    <h2>고급</h2>
+    <button type="button" id="clear">학습 캐시 초기화</button>
+    <p class="note">폴더와 채팅 분류는 유지됩니다.</p>
+    <p id="notice" role="status"></p>
+    <p id="error" role="alert"></p>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>

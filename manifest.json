@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "GPT Sidebar Manager",
+  "version": "1.0.0",
+  "description": "ChatGPT 사이드바의 프로젝트 채팅 정리를 보조합니다.",
+  "permissions": ["storage"],
+  "action": { "default_popup": "popup/popup.html" },
+  "content_scripts": [
+    {
+      "matches": ["https://chatgpt.com/*"],
+      "js": ["src/adapter/NetworkBridgeMain.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["https://chatgpt.com/*"],
+      "js": [
+        "src/adapter/ChatGPTAdapter.js",
+        "src/membership/DomMembershipProvider.js",
+        "src/membership/MembershipRegistry.js",
+        "src/membership/NetworkMembershipProvider.js",
+        "src/learning/LearningStore.js",
+        "src/learning/ProjectScanner.js",
+        "src/learning/BulkLearner.js",
+        "src/sidebar/RecentFilter.js",
+        "src/storage/FolderStore.js",
+        "src/storage/AssignmentStore.js",
+        "src/storage/Migration.js",
+        "src/storage/SyncStore.js",
+        "src/storage/NetworkSettingsStore.js",
+        "src/storage/UiSettingsStore.js",
+        "src/drag/SafeDragController.js",
+        "src/drag/FullDragController.js",
+        "src/sidebar/FolderTree.js",
+        "src/sidebar/SidebarRoot.js",
+        "src/content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

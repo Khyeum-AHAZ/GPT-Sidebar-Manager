@@ -1,0 +1,17 @@
+* { box-sizing: border-box; }
+body { width: 310px; margin: 0; font: 13px system-ui, sans-serif; color: #202123; background: #fff; }
+main { padding: 14px; }
+h1 { font-size: 15px; margin: 0 0 12px; }
+h2 { font-size: 13px; margin: 18px 0 8px; }
+p { margin: 7px 0; }
+.actions { display: grid; gap: 6px; }
+button { width: 100%; padding: 7px 9px; border: 1px solid #d0d0d0; border-radius: 6px; background: #f7f7f7; color: inherit; text-align: left; cursor: pointer; }
+button:hover { background: #ededed; }
+button:disabled { opacity: .5; cursor: default; }
+button[hidden] { display: none; }
+#connection, .note { color: #666; }
+.option { display: flex; align-items: center; gap: 6px; margin: 7px 0; }
+.option input { margin: 0; }
+#results { padding-left: 20px; max-height: 200px; overflow: auto; }
+#results li { margin: 4px 0; }
+#error { color: #b42318; }
