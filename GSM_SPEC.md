@@ -5,7 +5,7 @@
 - 프로젝트명: **GSM**
 - 표시명: **GPT Sidebar Manager**
 - 목적: ChatGPT 웹의 공식 프로젝트 기능은 그대로 유지하면서, 사이드바의 프로젝트/최근 채팅 정리 기능을 보완하는 개인용 Chrome 확장 프로그램.
-- 배포: Chrome Web Store 미사용. 비공개 GitHub 저장소의 Releases에서 ZIP을 받아 로컬 폴더로 압축 해제하여 집과 회사 PC에서 설치.
+- 배포: Chrome Web Store 미사용. 공개 GitHub 저장소의 Releases에서 ZIP을 받아 로컬 폴더로 압축 해제하여 집과 회사 PC에서 설치.
 - 사용 환경:
   - Chrome
   - 같은 Google 계정으로 Chrome Sync 사용

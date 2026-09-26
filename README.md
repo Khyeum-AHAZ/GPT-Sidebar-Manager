@@ -4,7 +4,7 @@ ChatGPT 프로젝트별 1단계 폴더, 채팅 정렬 및 프로젝트 채팅의
 
 ## 설치 및 갱신
 
-1. [GitHub Releases](https://github.com/Khyeum-AHAZ/gpt-sidebar-manager/releases)에서 `GPT-Sidebar-Manager-v1.0.0.zip`을 받아 영구적으로 사용할 폴더에 압축 해제합니다. 비공개 저장소이므로 접근 가능한 GitHub 계정으로 로그인해야 합니다. `manifest.json`, `src`, `popup`이 같은 폴더에 있어야 합니다.
+1. [GitHub Releases](https://github.com/Khyeum-AHAZ/GPT-Sidebar-Manager/releases)에서 `GPT-Sidebar-Manager-v1.0.0.zip`을 받아 영구적으로 사용할 폴더에 압축 해제합니다. 공개 저장소이므로 로그인 없이 다운로드할 수 있습니다. `manifest.json`, `src`, `popup`이 같은 폴더에 있어야 합니다.
 2. Chrome 주소창에서 `chrome://extensions`를 열고 개발자 모드를 켭니다.
 3. `압축해제된 확장 프로그램을 로드합니다`를 눌러 `manifest.json`이 있는 폴더를 선택합니다.
 4. ChatGPT 탭을 새로고침하고 확장 아이콘을 눌러 프로젝트 인식 상태를 확인합니다.
