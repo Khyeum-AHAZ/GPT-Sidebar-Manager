@@ -402,6 +402,14 @@
       return matches.length === 1 ? matches[0] : null;
     }
 
+    openConversation(conversationId, projectId) {
+      const link = this.findNativeChatLink(conversationId, projectId);
+      if (!link?.isConnected) return false;
+      // Keep ChatGPT's router and click handlers instead of navigating a cloned anchor.
+      link.click();
+      return true;
+    }
+
     nativeMembership(conversationId) {
       const projects = new Set(this.getProjectChats()
         .filter((chat) => chat.conversationId === conversationId).map((chat) => chat.projectId));

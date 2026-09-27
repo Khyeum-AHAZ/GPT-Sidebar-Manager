@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "GPT Sidebar Manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "ChatGPT 사이드바의 프로젝트 채팅 정리를 보조합니다.",
   "permissions": ["storage"],
   "action": { "default_popup": "popup/popup.html" },

@@ -157,6 +157,14 @@
         const link = this.element(doc, "a", "gsm-chat", chat.title);
         link.href = chat.href;
         link.setAttribute("aria-label", chat.title);
+        link.addEventListener("click", (event) => {
+          if (event.defaultPrevented || event.button !== 0 || event.ctrlKey ||
+              event.metaKey || event.shiftKey || event.altKey) return;
+          if (this.adapter?.openConversation(chat.conversationId, projectId)) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        });
         if (chat.conversationId === currentConversationId) link.setAttribute("aria-current", "page");
         this.drag.sourceNode(link, { kind: "chat", id: chat.conversationId, projectId });
         this.fullDrag?.bindOwnedSource(link, { conversationId: chat.conversationId, projectId });
