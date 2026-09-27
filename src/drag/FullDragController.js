@@ -3,7 +3,7 @@
 
   class FullDragController {
     constructor({ adapter, registry, assignmentStore, folderStore,
-      onBegin = () => {}, onEnd = () => {}, onStatus = () => {} }) {
+      onBegin = () => {}, onEnd = () => {}, onStatus = () => {}, canInteract = () => true }) {
       this.adapter = adapter;
       this.registry = registry;
       this.assignmentStore = assignmentStore;
@@ -11,6 +11,7 @@
       this.onBegin = onBegin;
       this.onEnd = onEnd;
       this.onStatus = onStatus;
+      this.canInteract = canInteract;
       this.enabled = false;
       this.busy = false;
       this.source = null;
@@ -39,14 +40,14 @@
     }
 
     allowed(source, target) {
-      return this.enabled && !this.busy && source && target &&
+      return this.canInteract() && this.enabled && !this.busy && source && target &&
         source.projectId !== target.projectId &&
         typeof source.conversationId === "string" &&
         (target.projectId !== null || target.folderId === null);
     }
 
     start(event, source) {
-      if (!this.enabled || this.busy) return;
+      if (!this.canInteract() || !this.enabled || this.busy) return;
       this.source = null;
       const actual = this.adapter.nativeMembership(source.conversationId);
       if (!actual.known || actual.projectId !== source.projectId) {

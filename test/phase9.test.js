@@ -358,7 +358,7 @@ test("GSM display switch is local, defaults on, and persists off across reload",
   assert.equal(failing.state().enabled, false);
 });
 
-async function contentHarness(local) {
+async function contentHarness(local, selectionState = null) {
   const trace = [];
   const errors = [];
   let onMessage;
@@ -401,6 +401,7 @@ async function contentHarness(local) {
     state() { return { kind: "off" }; }
   }
   class SidebarRoot {
+    constructor() { this.tree = { pending: false, drag: { busy: false } }; }
     render() { trace.push("sidebar.render"); }
     clear() { trace.push("sidebar.clear"); }
   }
@@ -433,6 +434,13 @@ async function contentHarness(local) {
     GSMNetworkMembershipProvider: Network,
     GSMBulkLearner: Learner
   };
+  if (selectionState) sandbox.GSMRecentSelectionView = class {
+    constructor(adapter, options) { selectionState.finish = options.onFinished; }
+    active() { return selectionState.active; }
+    busy() { return selectionState.busy; }
+    cancel() { trace.push("selection.cancel"); if (!selectionState.busy) selectionState.active = false; }
+    clear() { trace.push("selection.clear"); selectionState.active = false; }
+  };
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, "../src/content.js"), "utf8"), sandbox);
   await new Promise((resolve) => setImmediate(resolve));
   async function send(type, extra = {}) {
@@ -463,6 +471,21 @@ test("popup OFF restores the adapter immediately and ON remounts it without relo
   assert.deepEqual(reloaded.errors, []);
   assert.equal(reloaded.trace.includes("adapter.start"), false);
   assert.equal((await reloaded.send("gsm.learning.status")).uiSettings.enabled, false);
+});
+
+test("selection blocks learning and OFF waits for an in-flight deletion before restoring the native UI", async () => {
+  const state = {active:true,busy:false};
+  const app = await contentHarness(area(), state);
+  assert.deepEqual(app.errors, []);
+  assert.equal(app.trace.includes("selection.cancel"),false);
+  assert.match((await app.send("gsm.learning.start", {mode:"all"})).error, /선택이나 삭제/);
+  state.busy = true;
+  const off = await app.send("gsm.ui.set",{enabled:false});
+  assert.equal(off.uiActive,true); assert.equal(app.trace.includes("adapter.stop"),false);
+  assert.equal(app.trace.includes("selection.cancel"),true);
+  state.busy = false; state.finish();
+  assert.equal(app.trace.includes("selection.clear"),true);
+  assert.equal(app.trace.includes("adapter.stop"),true);
 });
 
 test("a cancelled learning scan signals completion before UI teardown", async () => {

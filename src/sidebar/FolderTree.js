@@ -86,19 +86,21 @@
 
   class FolderTree {
     constructor(store, { assignmentStore, fullDrag = null, adapter = null,
-      onChange = () => {} } = {}) {
+      onChange = () => {}, canInteract = () => true, canOpenChat = () => true } = {}) {
       this.store = store;
       this.assignmentStore = assignmentStore;
       this.fullDrag = fullDrag;
       this.adapter = adapter;
       this.onChange = onChange;
+      this.canInteract = canInteract;
+      this.canOpenChat = canOpenChat;
       this.pending = false;
       this.error = null;
       this.editor = null;
       this.deleteConfirmation = null;
       this.projects = new Map();
       this.drag = new globalThis.GSMSafeDragController({
-        canDrag: () => !this.pending && this.store.writable && this.assignmentStore.writable,
+        canDrag: () => this.canInteract() && !this.pending && this.store.writable && this.assignmentStore.writable,
         onDrop: (source, target) => this.drop(source, target),
         onError: (error) => { this.error = error.message || "드래그 저장에 실패했습니다."; this.onChange(); }
       });
@@ -120,6 +122,7 @@
     }
 
     async drop(source, target) {
+      if (!this.canInteract()) return;
       const project = this.projects.get(source.projectId);
       if (!project || target.projectId !== source.projectId || this.pending ||
           !this.store.writable || !this.assignmentStore.writable) return;
@@ -158,6 +161,7 @@
         link.href = chat.href;
         link.setAttribute("aria-label", chat.title);
         link.addEventListener("click", (event) => {
+          if (!this.canOpenChat()) { event.preventDefault(); event.stopPropagation(); return; }
           if (event.defaultPrevented || event.button !== 0 || event.ctrlKey ||
               event.metaKey || event.shiftKey || event.altKey) return;
           if (this.adapter?.openConversation(chat.conversationId, projectId)) {
@@ -172,6 +176,7 @@
         const menu = this.element(doc, "button", "gsm-chat-menu", "···");
         menu.type = "button";
         menu.addEventListener("click", async () => {
+          if (!this.canOpenChat()) return;
           try {
             if (!this.adapter) throw new Error("ChatGPT Adapter를 사용할 수 없습니다.");
             await this.adapter.openNativeChatMenu(chat.conversationId, projectId);

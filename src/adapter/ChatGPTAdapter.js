@@ -697,6 +697,8 @@
         this.lastFingerprint = fingerprint;
         this.onSnapshot?.(snapshot);
       }
+      // Refresh row bindings even when React replaced nodes without changing their IDs.
+      this.onRecentSelectionRefresh?.(snapshot);
     }
 
     scheduleScan(mutations) {

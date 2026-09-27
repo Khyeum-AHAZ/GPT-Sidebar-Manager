@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "GPT Sidebar Manager",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "ChatGPT 사이드바의 프로젝트 채팅 정리를 보조합니다.",
   "permissions": ["storage"],
   "icons": {
@@ -30,6 +30,7 @@
       "matches": ["https://chatgpt.com/*"],
       "js": [
         "src/adapter/ChatGPTAdapter.js",
+        "src/adapter/RecentChatAdapter.js",
         "src/membership/DomMembershipProvider.js",
         "src/membership/MembershipRegistry.js",
         "src/membership/NetworkMembershipProvider.js",
@@ -47,6 +48,9 @@
         "src/drag/FullDragController.js",
         "src/sidebar/FolderTree.js",
         "src/sidebar/SidebarRoot.js",
+        "src/selection/MultiSelectController.js",
+        "src/selection/BatchDeleteController.js",
+        "src/sidebar/RecentSelectionView.js",
         "src/content.js"
       ],
       "run_at": "document_idle"

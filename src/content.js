@@ -44,14 +44,19 @@
     }));
     let latestSnapshot = null;
     let sidebarRoot;
+    let recentSelection = null;
+    const canDrag = () => !recentSelection?.active();
     const fullDrag = new globalThis.GSMFullDragController({
       adapter, registry, assignmentStore, folderStore,
+      canInteract: canDrag,
       onBegin: (id) => { bumpFullDragEpoch(id); pendingFullDragIds.add(id); },
       onEnd: (id) => { bumpFullDragEpoch(id); pendingFullDragIds.delete(id); }
     });
     sidebarRoot = new globalThis.GSMSidebarRoot(adapter, folderStore, {
       assignmentStore,
-      fullDrag
+      canInteract: canDrag,
+      fullDrag,
+      canOpenChat: () => !recentSelection?.busy()
     });
     await uiSettings.load();
     try {
@@ -110,6 +115,29 @@
     }
     const learner = new globalThis.GSMBulkLearner(adapter, registry, learningStore, scanner, networkProvider);
     let manualScanBusy = false;
+    try {
+      recentSelection = new globalThis.GSMRecentSelectionView(adapter, {
+        canEnter: () => uiActive && !fullDrag.busy && !sidebarRoot.tree.pending &&
+          !fullDrag.source && !sidebarRoot.tree.drag.source &&
+          !sidebarRoot.tree.drag.busy && !learner.status().running && !manualScanBusy,
+        onFinished: () => applyUiState(),
+        onModeChange: () => {
+          fullDrag.end();
+          sidebarRoot.tree.drag.source = null;
+          if (folderUiReady && uiActive && latestSnapshot) {
+            try { sidebarRoot.render(latestSnapshot); }
+            catch (error) { console.warn("GSM folder UI refresh failed:", error); }
+          }
+        }
+      });
+      adapter.onRecentSelectionRefresh = (snapshot) => {
+        if (!uiActive) return;
+        try { recentSelection.refresh(snapshot); }
+        catch (error) { recentSelection.fail(error); }
+      };
+    } catch (error) {
+      console.warn("GSM recent selection unavailable:", error);
+    }
     syncStore.onStatusChange = () => {
       if (!folderUiReady || !latestSnapshot) return;
       try {
@@ -163,6 +191,8 @@
         return;
       }
       if (!uiActive) return;
+      recentSelection?.cancel();
+      if (recentSelection?.busy()) return;
       if (learner.status().running) learner.cancel();
       if (learner.status().running || fullDrag.state().busy || manualScanBusy) return;
       uiActive = false;
@@ -172,6 +202,7 @@
       networkProvider.setEnabled(false);
       fullDrag.setEnabled(false);
       sidebarRoot.clear();
+      recentSelection?.clear();
       adapter.stop();
     };
     uiSettings.onChange = applyUiState;
@@ -249,6 +280,10 @@
       }
       if (!learningReady && message.type.startsWith("gsm.learning.")) {
         throw new Error("프로젝트 학습 저장소를 사용할 수 없습니다.");
+      }
+      if ((message.type === "gsm.learning.start" || message.type === "gsm.network.check" ||
+          message.type === "gsm.learning.clear") && recentSelection?.active()) {
+        throw new Error("최근 채팅 선택이나 삭제를 끝낸 뒤 실행해 주세요.");
       }
       if (message.type === "gsm.learning.start") return { state: learner.start(message.mode) };
       if (message.type === "gsm.learning.cancel") return { state: learner.cancel() };
